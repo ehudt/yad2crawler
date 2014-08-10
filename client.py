@@ -1,11 +1,7 @@
 from urllib             import urlencode
 from urllib2            import urlopen, build_opener, install_opener, quote, Request, ProxyHandler, HTTPCookieProcessor
 from cookielib          import Cookie, CookieJar
-
-PROXY = {
-    "http":  "localhost:8888",
-    "https": "localhost:8888",
-}
+from settings           import PROXY
 
 class Yad2Client(object):
 

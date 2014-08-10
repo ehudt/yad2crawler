@@ -62,8 +62,6 @@ class Yad2Crawler(object):
     
 
     def crawl_apartments(self, json):
-        found_new = None
-
         for apr in json:
             if apr['Type'] != 'Ad':
                 continue
@@ -98,8 +96,6 @@ class Yad2Crawler(object):
                 self.log.debug(".. Filtering for old update date")
                 continue
 
-            found_new = False
-
             if self.db.id_exists(record_id):
                 self.log.debug(".. Already exists in database")
                 self.db.update_last_seen(record_id)
@@ -112,11 +108,7 @@ class Yad2Crawler(object):
             self.db.add_new(record_id, area_name, address, description, price, url)
             self.log.debug(".. Added to database")
 
-            found_new = True
-
             self.log.debug(".. OK")
-
-        return found_new
 
 
     def notify_apartment(self, url, description, area):
@@ -172,29 +164,22 @@ class Yad2Crawler(object):
 
             page = 1
             more = True
-            found_new = True
 
-            while more and found_new:
+            while more:
                 self.log.info("Requesting page #%d", page)
 
                 data = self.get_page(page)
                 json = loads(data)            
 
-                found_new = False
-
                 if 'Private' in json and 'Results' in json['Private']:
                     self.log.info(".. Checking private apartments...")
-                    found_new = (self.crawl_apartments(json['Private']['Results']) == True) or found_new
+                    self.crawl_apartments(json['Private']['Results'])
 
                 if not ONLY_PRIVATE and 'Trade' in json and 'Results' in json['Trade']:
                     self.log.info(".. Checking trade apartments...")
-                    found_new = (self.crawl_apartments(json['Trade']['Results']) == True) or found_new
+                    self.crawl_apartments(json['Trade']['Results'])
 
                 more = True if json['MoreResults'] == 1 else False
-
-                if more and not found_new:
-                    self.log.info("No new results on page %d, stopping browsing", page)
-
                 page += 1
 
             self.log.info("Sweep ended, going to sleep (%d min)", ITERATION_SLEEP_SEC / 60)
