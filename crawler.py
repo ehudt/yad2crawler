@@ -159,30 +159,32 @@ class Yad2Crawler(object):
 
 
     def crawl(self):
-        while True:
-            self.log.info("Starting sweep")
+        try:
+            while True:
+                self.log.info("Starting sweep")
 
-            page = 1
-            more = True
+                page = 1
+                more = True
 
-            while more:
-                self.log.info("Requesting page #%d", page)
+                while more:
+                    self.log.info("Requesting page #%d", page)
 
-                data = self.get_page(page)
-                json = loads(data)            
+                    data = self.get_page(page)
+                    json = loads(data)            
 
-                if 'Private' in json and 'Results' in json['Private']:
-                    self.log.info(".. Checking private apartments...")
-                    self.crawl_apartments(json['Private']['Results'])
+                    if 'Private' in json and 'Results' in json['Private']:
+                        self.log.info(".. Checking private apartments...")
+                        self.crawl_apartments(json['Private']['Results'])
 
-                if not ONLY_PRIVATE and 'Trade' in json and 'Results' in json['Trade']:
-                    self.log.info(".. Checking trade apartments...")
-                    self.crawl_apartments(json['Trade']['Results'])
+                    if not ONLY_PRIVATE and 'Trade' in json and 'Results' in json['Trade']:
+                        self.log.info(".. Checking trade apartments...")
+                        self.crawl_apartments(json['Trade']['Results'])
 
-                more = True if json['MoreResults'] == 1 else False
-                page += 1
+                    more = True if json['MoreResults'] == 1 else False
+                    page += 1
 
-            self.log.info("Sweep ended, going to sleep (%d min)", ITERATION_SLEEP_SEC / 60)
+                self.log.info("Sweep ended, going to sleep (%d min)", ITERATION_SLEEP_SEC / 60)
 
-            sleep(ITERATION_SLEEP_SEC)
-
+                sleep(ITERATION_SLEEP_SEC)
+        except Exception as e:
+            self.log.error(e)
