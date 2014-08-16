@@ -45,18 +45,33 @@ class Yad2Crawler(object):
         url = "http://m.yad2.co.il/API/MadorResults.php"    
 
         args = {
-            "CatID":        "2",
-            "SubCatID":     "2",
+            "CatID":        CAT_ID,
+            "SubCatID":     SUB_CAT_ID,
             "AreaID":       AREA_ID,
-            "FromRooms":    FROM_ROOMS,
-            "ToRooms":      TO_ROOMS,
-            "FromPrice":    FROM_PRICE,
-            "ToPrice":      TO_PRICE,
-            "PriceType":    "0",
-            "PetsInHouse":  "1" if ONLY_PETS_ALLOWED else "0",
-            "Parking":      "1" if ONLY_WITH_PARKING else "0",
+            "PriceType":    0,
             "Page":         page,
         }
+
+        if 'HOME_TYPE_ID' in globals():
+            args['HomeTypeID'] = HOME_TYPE_ID
+
+        if 'FROM_ROOMS' in globals():
+            args['FromRooms'] = FROM_ROOMS
+
+        if 'TO_ROOMS' in globals():
+            args['ToRooms'] = TO_ROOMS 
+
+        if 'FROM_PRICE' in globals():
+            args['FromPrice'] = FROM_PRICE 
+
+        if 'TO_PRICE' in globals():
+            args['ToPrice'] = TO_PRICE
+
+        if 'ONLY_PETS_ALLOWED' in globals():
+            args['PetsInHouse'] = 1 if ONLY_PETS_ALLOWED else 0
+            
+        if 'ONLY_WITH_PARKING' in globals():
+            args['Parking'] = 1 if ONLY_WITH_PARKING else 0   
 
         return self.client.get_url(url, args = args)
     
@@ -81,7 +96,7 @@ class Yad2Crawler(object):
 
             self.log.debug(".. Checking %s", record_id)
             
-            if ONLY_WITH_PHOTO and "missingAdPic.jpg" in img:
+            if 'ONLY_WITH_PHOTO' in globals() and ONLY_WITH_PHOTO and "missingAdPic.jpg" in img:
                 self.log.debug(".. Filtering for missing img")
                 continue
 
@@ -176,7 +191,7 @@ class Yad2Crawler(object):
                         self.log.info(".. Checking private apartments...")
                         self.crawl_apartments(json['Private']['Results'])
 
-                    if not ONLY_PRIVATE and 'Trade' in json and 'Results' in json['Trade']:
+                    if (not 'ONLY_PRIVATE' in globals() or not ONLY_PRIVATE) and 'Trade' in json and 'Results' in json['Trade']:
                         self.log.info(".. Checking trade apartments...")
                         self.crawl_apartments(json['Trade']['Results'])
 
