@@ -32,8 +32,11 @@ class Yad2Client(object):
         headers["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
         headers["User-Agent"] = "Mozilla/5.0 (Linux; Android 4.2.2; Android SDK built for x86 Build/KK) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36"
         headers["Accept-Language"] = "en-US"
+
+        args = args or {}
+        args["AppVersion"] = "10"
                 
-        url = url + "?" + urlencode(args) if args else url
+        url = url + "?" + urlencode(args)
         req = Request(url, headers = headers)
         response = urlopen(req)
 
