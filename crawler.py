@@ -143,7 +143,7 @@ class Yad2Crawler(object):
         errors = True
         prid = None
 
-        self.log.debug(".. Getting apartment page %s", url)
+        self.log.debug(".. Getting page %s", url)
         
         while errors:        
             
@@ -173,10 +173,10 @@ class Yad2Crawler(object):
         return pp.create_apartment_page(url)
 
 
-    def crawl(self):
-        try:
-            while True:
-                self.log.info("Starting sweep")
+    def crawl(self):        
+        while True:
+            try:
+                self.log.info("Starting scan")
 
                 page = 1
                 more = True
@@ -198,8 +198,8 @@ class Yad2Crawler(object):
                     more = True if json['MoreResults'] == 1 else False
                     page += 1
 
-                self.log.info("Sweep ended, going to sleep (%d min)", ITERATION_SLEEP_SEC / 60)
+                self.log.info("Scan ended, going to sleep (%d min)", ITERATION_SLEEP_SEC / 60)
 
                 sleep(ITERATION_SLEEP_SEC)
-        except Exception as e:
-            self.log.error(e)
+            except Exception as e:
+                self.log.error(e)
