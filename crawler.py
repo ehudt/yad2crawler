@@ -201,5 +201,10 @@ class Yad2Crawler(object):
                 self.log.info("Scan ended, going to sleep (%d min)", ITERATION_SLEEP_SEC / 60)
 
                 sleep(ITERATION_SLEEP_SEC)
+
+            except RuntimeError as e:
+                self.log.error(e)
+                break
+
             except Exception as e:
                 self.log.error(e)
