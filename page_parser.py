@@ -100,7 +100,4 @@ class PageParser(object):
         page = self.add_details(page)
         page = self.add_ad_options(page)
 
-        #with open("c:\\users\\oleg\\desktop\\ad.html", "wb") as f:
-        #    f.write(page.encode("utf-8"))
-
         return page
