@@ -50,7 +50,7 @@ class PageParser(object):
 
     def add_details(self, page):
         html = "<table style=\"" + styles_kv + "\">"
-        details = self.get_div("ad-details")
+        details = self.get_div("tableOfKeyValueNearImage")
         for kv in details.findAll("div", attrs={"class": "key-value"}):
             key = self.get_div("key", kv)
             value = self.get_div("value", kv)
@@ -87,8 +87,8 @@ class PageParser(object):
         for entry in entries:
             span = entry.find("span")
             if span:
-                style = entry.find("span").attrs['style']
-                exists = "left top" in style
+                cls = entry.find("span").attrs['class']
+                exists = "checked" in cls
                 html += "<td style=\"" + styles_options_td + "\">" + ("<center>X</center>" if exists else "") + "</td>"
         html += "</tr>"
 
